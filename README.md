@@ -11,10 +11,10 @@
 [codecov-img]: https://codecov.io/gh/weak-head/data-pipe/branch/main/graph/badge.svg?token=8hRWwhr5Ch
 [codecov-url]: https://app.codecov.io/gh/weak-head/data-pipe/
 
-[codacy-cov-img]: https://app.codacy.com/project/badge/Coverage/7780e21ba17046a3b43fe68a77677bed
-[codacy-cov-url]: https://app.codacy.com/gh/weak-head/data-pipe/dashboard?branch=mai
+[codacy-cov-img]: https://app.codacy.com/project/badge/Coverage/c5ffebce01704af496a6a166dda83701
+[codacy-cov-url]: https://app.codacy.com/gh/weak-head/data-pipe/dashboard?branch=main
 
-[codacy-qlt-img]:  https://app.codacy.com/project/badge/Grade/c5ffebce01704af496a6a166dda83701
+[codacy-qlt-img]: https://app.codacy.com/project/badge/Grade/c5ffebce01704af496a6a166dda83701
 [codacy-qlt-url]: https://www.codacy.com/gh/weak-head/data-pipe/dashboard?branch=main
 
 # Build and Test
