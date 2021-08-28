@@ -1,0 +1,10 @@
+# VS Code
+.vscode
+
+# Test and coverage output
+coverage/
+coverage.html
+coverage.cov
+
+# Compiled binary file
+data-pipe

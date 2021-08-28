@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package messaging.v1;
+import "gogoproto/gogo.proto";
+
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.sizer_all) = true;
+
+message Input {
+
+}
+
+message Output {
+
+}
