@@ -4,7 +4,6 @@ go 1.17
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/cobra v1.2.1
@@ -19,6 +18,13 @@ require (
 )
 
 require (
+	github.com/gogo/protobuf v1.3.2
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/pflag v1.0.5 // indirect
+)
+
+require (
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
+	golang.org/x/tools v0.1.2 // indirect
 )
