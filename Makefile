@@ -12,7 +12,7 @@ IMAGE_TAG ?= 0.0.1
 
 dep: ## Get the dependencies
 	@go get -v -d ./...
-	@go get -u golang.org/x/lint/golint
+	@go get -d golang.org/x/lint/golint
 
 compile: ## Generate protobuf APIs
 	./scripts/compile.sh
@@ -44,7 +44,7 @@ build: dep compile ## Build the binary file
 clean: ## Remove previous build
 	@rm -f $(PROJECT_NAME)
 
-install: build-docker ## Install helm chart
+install: docker ## Install helm chart
 	@kind load docker-image $(IMAGE_ID):$(IMAGE_TAG)
 	@helm install ${PROJECT_NAME} ./deploy/${PROJECT_NAME}/
 
