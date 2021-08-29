@@ -8,7 +8,7 @@ IMAGE_ID ?= ${PKG}
 IMAGE_TAG ?= 0.0.1
 
 .PHONY: all dep compile build clean test coverage coverhtml
-.PHONY: lint race msan install uninstall build-docker
+.PHONY: lint race msan install uninstall docker
 
 dep: ## Get the dependencies
 	@go get -v -d ./...
@@ -35,7 +35,7 @@ coverage: ## Generate global code coverage report
 coverhtml: ## Generate global code coverage report in HTML
 	./scripts/coverage.sh html;
 
-build-docker: compile ## Build docker image
+docker: compile ## Build docker image
 	@docker build -t $(IMAGE_ID):$(IMAGE_TAG) .
 
 build: dep compile ## Build the binary file
