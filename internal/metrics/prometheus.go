@@ -69,6 +69,15 @@ var (
 	)
 )
 
+type Config struct {
+	Addr string
+	Path string
+}
+
+type ServiceInfo struct {
+	Engine string
+}
+
 // prometheusServer
 type prometheusServer struct {
 	server   *http.Server

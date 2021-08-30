@@ -10,6 +10,17 @@ import (
 	"github.com/weak-head/data-pipe/internal/logger"
 )
 
+// StorageConfig
+type StorageConfig struct {
+	Endpoint  string
+	UseSSL    bool
+	AccessKey string
+	SecretKey string
+
+	Region                 string
+	CreateBucketIfNotExist bool
+}
+
 // minioStorage
 type minioStorage struct {
 	config StorageConfig
