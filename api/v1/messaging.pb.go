@@ -23,24 +23,58 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Input struct {
+type Location_Kind int32
+
+const (
+	Location_MINIO Location_Kind = 0
+)
+
+var Location_Kind_name = map[int32]string{
+	0: "MINIO",
+}
+
+var Location_Kind_value = map[string]int32{
+	"MINIO": 0,
+}
+
+func (x Location_Kind) String() string {
+	return proto.EnumName(Location_Kind_name, int32(x))
+}
+
+func (Location_Kind) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_bfe8346b9862b125, []int{0, 0}
+}
+
+//
+//Location uniquely identifies a file
+//on a distributed file system.
+type Location struct {
+	// Kind of the underlyind storage system
+	// that is used to store the file.
+	Kind Location_Kind `protobuf:"varint,1,opt,name=kind,proto3,enum=messaging.v1.Location_Kind" json:"kind,omitempty"`
+	// Bucket name on the distributed file system
+	// that stores the file object.
+	Bucket string `protobuf:"bytes,2,opt,name=bucket,proto3" json:"bucket,omitempty"`
+	// Name of the object in the specified bucket
+	// on the distributed file system.
+	ObjectName           string   `protobuf:"bytes,3,opt,name=object_name,json=objectName,proto3" json:"object_name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Input) Reset()         { *m = Input{} }
-func (m *Input) String() string { return proto.CompactTextString(m) }
-func (*Input) ProtoMessage()    {}
-func (*Input) Descriptor() ([]byte, []int) {
+func (m *Location) Reset()         { *m = Location{} }
+func (m *Location) String() string { return proto.CompactTextString(m) }
+func (*Location) ProtoMessage()    {}
+func (*Location) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfe8346b9862b125, []int{0}
 }
-func (m *Input) XXX_Unmarshal(b []byte) error {
+func (m *Location) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Input) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Location) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Input.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Location.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -50,36 +84,62 @@ func (m *Input) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Input) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Input.Merge(m, src)
+func (m *Location) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Location.Merge(m, src)
 }
-func (m *Input) XXX_Size() int {
+func (m *Location) XXX_Size() int {
 	return m.Size()
 }
-func (m *Input) XXX_DiscardUnknown() {
-	xxx_messageInfo_Input.DiscardUnknown(m)
+func (m *Location) XXX_DiscardUnknown() {
+	xxx_messageInfo_Location.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Input proto.InternalMessageInfo
+var xxx_messageInfo_Location proto.InternalMessageInfo
 
-type Output struct {
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+func (m *Location) GetKind() Location_Kind {
+	if m != nil {
+		return m.Kind
+	}
+	return Location_MINIO
 }
 
-func (m *Output) Reset()         { *m = Output{} }
-func (m *Output) String() string { return proto.CompactTextString(m) }
-func (*Output) ProtoMessage()    {}
-func (*Output) Descriptor() ([]byte, []int) {
+func (m *Location) GetBucket() string {
+	if m != nil {
+		return m.Bucket
+	}
+	return ""
+}
+
+func (m *Location) GetObjectName() string {
+	if m != nil {
+		return m.ObjectName
+	}
+	return ""
+}
+
+type InputFrame struct {
+	//
+	FrameId string `protobuf:"bytes,1,opt,name=frame_id,json=frameId,proto3" json:"frame_id,omitempty"`
+	// The location of the data frame
+	// on a distributed file system.
+	FrameLocation        *Location `protobuf:"bytes,2,opt,name=frame_location,json=frameLocation,proto3" json:"frame_location,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *InputFrame) Reset()         { *m = InputFrame{} }
+func (m *InputFrame) String() string { return proto.CompactTextString(m) }
+func (*InputFrame) ProtoMessage()    {}
+func (*InputFrame) Descriptor() ([]byte, []int) {
 	return fileDescriptor_bfe8346b9862b125, []int{1}
 }
-func (m *Output) XXX_Unmarshal(b []byte) error {
+func (m *InputFrame) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Output) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *InputFrame) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Output.Marshal(b, m, deterministic)
+		return xxx_messageInfo_InputFrame.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -89,37 +149,131 @@ func (m *Output) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Output) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Output.Merge(m, src)
+func (m *InputFrame) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InputFrame.Merge(m, src)
 }
-func (m *Output) XXX_Size() int {
+func (m *InputFrame) XXX_Size() int {
 	return m.Size()
 }
-func (m *Output) XXX_DiscardUnknown() {
-	xxx_messageInfo_Output.DiscardUnknown(m)
+func (m *InputFrame) XXX_DiscardUnknown() {
+	xxx_messageInfo_InputFrame.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Output proto.InternalMessageInfo
+var xxx_messageInfo_InputFrame proto.InternalMessageInfo
+
+func (m *InputFrame) GetFrameId() string {
+	if m != nil {
+		return m.FrameId
+	}
+	return ""
+}
+
+func (m *InputFrame) GetFrameLocation() *Location {
+	if m != nil {
+		return m.FrameLocation
+	}
+	return nil
+}
+
+type ConvertedBlob struct {
+	//
+	FrameId string `protobuf:"bytes,1,opt,name=frame_id,json=frameId,proto3" json:"frame_id,omitempty"`
+	// The location of the data frame
+	// on a distributed file system.
+	FrameLocation *Location `protobuf:"bytes,2,opt,name=frame_location,json=frameLocation,proto3" json:"frame_location,omitempty"`
+	//
+	ConvertedLocation    *Location `protobuf:"bytes,3,opt,name=converted_location,json=convertedLocation,proto3" json:"converted_location,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *ConvertedBlob) Reset()         { *m = ConvertedBlob{} }
+func (m *ConvertedBlob) String() string { return proto.CompactTextString(m) }
+func (*ConvertedBlob) ProtoMessage()    {}
+func (*ConvertedBlob) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bfe8346b9862b125, []int{2}
+}
+func (m *ConvertedBlob) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConvertedBlob) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConvertedBlob.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConvertedBlob) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConvertedBlob.Merge(m, src)
+}
+func (m *ConvertedBlob) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConvertedBlob) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConvertedBlob.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConvertedBlob proto.InternalMessageInfo
+
+func (m *ConvertedBlob) GetFrameId() string {
+	if m != nil {
+		return m.FrameId
+	}
+	return ""
+}
+
+func (m *ConvertedBlob) GetFrameLocation() *Location {
+	if m != nil {
+		return m.FrameLocation
+	}
+	return nil
+}
+
+func (m *ConvertedBlob) GetConvertedLocation() *Location {
+	if m != nil {
+		return m.ConvertedLocation
+	}
+	return nil
+}
 
 func init() {
-	proto.RegisterType((*Input)(nil), "messaging.v1.Input")
-	proto.RegisterType((*Output)(nil), "messaging.v1.Output")
+	proto.RegisterEnum("messaging.v1.Location_Kind", Location_Kind_name, Location_Kind_value)
+	proto.RegisterType((*Location)(nil), "messaging.v1.Location")
+	proto.RegisterType((*InputFrame)(nil), "messaging.v1.InputFrame")
+	proto.RegisterType((*ConvertedBlob)(nil), "messaging.v1.ConvertedBlob")
 }
 
 func init() { proto.RegisterFile("api/v1/messaging.proto", fileDescriptor_bfe8346b9862b125) }
 
 var fileDescriptor_bfe8346b9862b125 = []byte{
-	// 105 bytes of a gzipped FileDescriptorProto
+	// 284 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4b, 0x2c, 0xc8, 0xd4,
 	0x2f, 0x33, 0xd4, 0xcf, 0x4d, 0x2d, 0x2e, 0x4e, 0x4c, 0xcf, 0xcc, 0x4b, 0xd7, 0x2b, 0x28, 0xca,
 	0x2f, 0xc9, 0x17, 0xe2, 0x41, 0x08, 0x94, 0x19, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x25,
-	0xf4, 0x41, 0x2c, 0x88, 0x1a, 0x25, 0x76, 0x2e, 0x56, 0xcf, 0xbc, 0x82, 0xd2, 0x12, 0x25, 0x0e,
-	0x2e, 0x36, 0xff, 0xd2, 0x92, 0x82, 0xd2, 0x12, 0x27, 0x9e, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c,
-	0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x31, 0x89, 0x0d, 0xac, 0xce, 0x18, 0x10, 0x00, 0x00, 0xff,
-	0xff, 0xdd, 0x59, 0x3f, 0x42, 0x65, 0x00, 0x00, 0x00,
+	0xf4, 0x41, 0x2c, 0x88, 0x1a, 0xa5, 0x76, 0x46, 0x2e, 0x0e, 0x9f, 0xfc, 0xe4, 0xc4, 0x92, 0xcc,
+	0xfc, 0x3c, 0x21, 0x7d, 0x2e, 0x96, 0xec, 0xcc, 0xbc, 0x14, 0x09, 0x46, 0x05, 0x46, 0x0d, 0x3e,
+	0x23, 0x69, 0x3d, 0x64, 0xfd, 0x7a, 0x30, 0x55, 0x7a, 0xde, 0x99, 0x79, 0x29, 0x41, 0x60, 0x85,
+	0x42, 0x62, 0x5c, 0x6c, 0x49, 0xa5, 0xc9, 0xd9, 0xa9, 0x25, 0x12, 0x4c, 0x0a, 0x8c, 0x1a, 0x9c,
+	0x41, 0x50, 0x9e, 0x90, 0x3c, 0x17, 0x77, 0x7e, 0x52, 0x56, 0x6a, 0x72, 0x49, 0x7c, 0x5e, 0x62,
+	0x6e, 0xaa, 0x04, 0x33, 0x58, 0x92, 0x0b, 0x22, 0xe4, 0x97, 0x98, 0x9b, 0xaa, 0x24, 0xc8, 0xc5,
+	0x02, 0x32, 0x46, 0x88, 0x93, 0x8b, 0xd5, 0xd7, 0xd3, 0xcf, 0xd3, 0x5f, 0x80, 0x41, 0x29, 0x8d,
+	0x8b, 0xcb, 0x33, 0xaf, 0xa0, 0xb4, 0xc4, 0xad, 0x28, 0x31, 0x37, 0x55, 0x48, 0x92, 0x8b, 0x23,
+	0x0d, 0xc4, 0x88, 0xcf, 0x84, 0x38, 0x87, 0x33, 0x88, 0x1d, 0xcc, 0xf7, 0x4c, 0x11, 0xb2, 0xe5,
+	0xe2, 0x83, 0x48, 0xe5, 0x40, 0x5d, 0x04, 0xb6, 0x9c, 0xdb, 0x48, 0x0c, 0xbb, 0x7b, 0x83, 0x78,
+	0xc1, 0xaa, 0x61, 0x5c, 0xa5, 0x0d, 0x8c, 0x5c, 0xbc, 0xce, 0xf9, 0x79, 0x65, 0xa9, 0x45, 0x25,
+	0xa9, 0x29, 0x4e, 0x39, 0xf9, 0x49, 0xb4, 0xb3, 0x4b, 0xc8, 0x95, 0x4b, 0x28, 0x19, 0x66, 0x15,
+	0xc2, 0x08, 0x66, 0xbc, 0x46, 0x08, 0xc2, 0x75, 0xc0, 0x84, 0x9c, 0x78, 0x4e, 0x3c, 0x92, 0x63,
+	0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x24, 0x36, 0x70, 0xcc, 0x19, 0x03, 0x02,
+	0x00, 0x00, 0xff, 0xff, 0x69, 0x21, 0x94, 0xcd, 0xf7, 0x01, 0x00, 0x00,
 }
 
-func (m *Input) Marshal() (dAtA []byte, err error) {
+func (m *Location) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -129,12 +283,12 @@ func (m *Input) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Input) MarshalTo(dAtA []byte) (int, error) {
+func (m *Location) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Input) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Location) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -142,11 +296,30 @@ func (m *Input) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.ObjectName) > 0 {
+		i -= len(m.ObjectName)
+		copy(dAtA[i:], m.ObjectName)
+		i = encodeVarintMessaging(dAtA, i, uint64(len(m.ObjectName)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Bucket) > 0 {
+		i -= len(m.Bucket)
+		copy(dAtA[i:], m.Bucket)
+		i = encodeVarintMessaging(dAtA, i, uint64(len(m.Bucket)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Kind != 0 {
+		i = encodeVarintMessaging(dAtA, i, uint64(m.Kind))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *Output) Marshal() (dAtA []byte, err error) {
+func (m *InputFrame) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -156,12 +329,12 @@ func (m *Output) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Output) MarshalTo(dAtA []byte) (int, error) {
+func (m *InputFrame) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Output) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *InputFrame) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -169,6 +342,83 @@ func (m *Output) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.XXX_unrecognized != nil {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.FrameLocation != nil {
+		{
+			size, err := m.FrameLocation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessaging(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FrameId) > 0 {
+		i -= len(m.FrameId)
+		copy(dAtA[i:], m.FrameId)
+		i = encodeVarintMessaging(dAtA, i, uint64(len(m.FrameId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ConvertedBlob) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConvertedBlob) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ConvertedBlob) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.ConvertedLocation != nil {
+		{
+			size, err := m.ConvertedLocation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessaging(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.FrameLocation != nil {
+		{
+			size, err := m.FrameLocation.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintMessaging(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.FrameId) > 0 {
+		i -= len(m.FrameId)
+		copy(dAtA[i:], m.FrameId)
+		i = encodeVarintMessaging(dAtA, i, uint64(len(m.FrameId)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -184,24 +434,67 @@ func encodeVarintMessaging(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Input) Size() (n int) {
+func (m *Location) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.Kind != 0 {
+		n += 1 + sovMessaging(uint64(m.Kind))
+	}
+	l = len(m.Bucket)
+	if l > 0 {
+		n += 1 + l + sovMessaging(uint64(l))
+	}
+	l = len(m.ObjectName)
+	if l > 0 {
+		n += 1 + l + sovMessaging(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
 	return n
 }
 
-func (m *Output) Size() (n int) {
+func (m *InputFrame) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.FrameId)
+	if l > 0 {
+		n += 1 + l + sovMessaging(uint64(l))
+	}
+	if m.FrameLocation != nil {
+		l = m.FrameLocation.Size()
+		n += 1 + l + sovMessaging(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConvertedBlob) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.FrameId)
+	if l > 0 {
+		n += 1 + l + sovMessaging(uint64(l))
+	}
+	if m.FrameLocation != nil {
+		l = m.FrameLocation.Size()
+		n += 1 + l + sovMessaging(uint64(l))
+	}
+	if m.ConvertedLocation != nil {
+		l = m.ConvertedLocation.Size()
+		n += 1 + l + sovMessaging(uint64(l))
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -214,7 +507,7 @@ func sovMessaging(x uint64) (n int) {
 func sozMessaging(x uint64) (n int) {
 	return sovMessaging(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Input) Unmarshal(dAtA []byte) error {
+func (m *Location) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -237,12 +530,95 @@ func (m *Input) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Input: wiretype end group for non-group")
+			return fmt.Errorf("proto: Location: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Input: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Location: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+			}
+			m.Kind = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Kind |= Location_Kind(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bucket", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Bucket = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ObjectName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ObjectName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMessaging(dAtA[iNdEx:])
@@ -268,7 +644,7 @@ func (m *Input) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Output) Unmarshal(dAtA []byte) error {
+func (m *InputFrame) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -291,12 +667,238 @@ func (m *Output) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Output: wiretype end group for non-group")
+			return fmt.Errorf("proto: InputFrame: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Output: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: InputFrame: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FrameId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FrameId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FrameLocation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.FrameLocation == nil {
+				m.FrameLocation = &Location{}
+			}
+			if err := m.FrameLocation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMessaging(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConvertedBlob) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMessaging
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConvertedBlob: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConvertedBlob: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FrameId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FrameId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FrameLocation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.FrameLocation == nil {
+				m.FrameLocation = &Location{}
+			}
+			if err := m.FrameLocation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ConvertedLocation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMessaging
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthMessaging
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ConvertedLocation == nil {
+				m.ConvertedLocation = &Location{}
+			}
+			if err := m.ConvertedLocation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipMessaging(dAtA[iNdEx:])

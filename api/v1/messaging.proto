@@ -7,10 +7,46 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.sizer_all) = true;
 
-message Input {
+/*
+    Location uniquely identifies a file
+    on a distributed file system.
+*/
+message Location {
+    enum Kind {
+        MINIO = 0;
+    }
 
+    // Kind of the underlyind storage system
+    // that is used to store the file.
+    Kind kind = 1;
+
+    // Bucket name on the distributed file system
+    // that stores the file object.
+    string bucket = 2;
+
+    // Name of the object in the specified bucket
+    // on the distributed file system.
+    string object_name = 3;
 }
 
-message Output {
 
+message InputFrame {
+    //
+    string frame_id = 1;
+
+    // The location of the data frame
+    // on a distributed file system.
+    Location frame_location = 2;
+}
+
+message ConvertedBlob {
+    //
+    string frame_id = 1;
+
+    // The location of the data frame
+    // on a distributed file system.
+    Location frame_location = 2;
+
+    //
+    Location converted_location = 3;
 }
